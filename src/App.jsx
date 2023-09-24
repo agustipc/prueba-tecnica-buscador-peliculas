@@ -8,22 +8,13 @@ import { useMovies } from './hooks/useMovies'
 import { useSearch } from './hooks/useSearch'
 
 function App () {
-  const { movies } = useMovies()
   const inputRef = useRef()
   const { search, setSearch, error } = useSearch()
+  const { movies, getMovies, loading } = useMovies({ search })
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    // Forma controlada: (using setState)
-    console.log(search)
-
-    // Forma no controlada:
-
-    // const data = new window.FormData(event.target)
-    // console.log(data.get('query'))
-
-    // const fields = Object.fromEntries(new window.FormData(event.target))
-    // console.log(fields)
+    getMovies()
   }
 
   const handleChange = (event) => {
@@ -44,7 +35,7 @@ function App () {
         {error && <p style={{ color: 'red' }}>{error}</p>}
       </header>
       <main>
-        <Movies movies={movies} />
+        {loading ? <p>Loading...</p> : <Movies movies={movies} />}
       </main>
     </div>
   )

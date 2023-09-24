@@ -1,16 +1,27 @@
-import responseMovies from '../mocks/with-results.json'
+import { useState, useRef } from 'react'
+import { searchMovies } from '../services/movies'
 
-export function useMovies () {
-  const movies = responseMovies.Search
+export function useMovies ({ search }) {
+  const [movies, setMovies] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const previousSearch = useRef(search)
 
-  // para no usar el contrato que viene de la api, mapeamos los datos, usamos nuestro propio contrato
-  // y si se cambia de api o la api cambia de contrato, solo tendremos que cambiar el mapeo
-  const mappedMovies = movies.map(movie => ({
-    id: movie.imdbID,
-    title: movie.Title,
-    year: movie.Year,
-    poster: movie.Poster
-  }))
+  const getMovies = async () => {
+    if (search === previousSearch.current) return
 
-  return { movies: mappedMovies }
+    try {
+      setLoading(true)
+      setError(null)
+      previousSearch.current = search
+      const newMovies = await searchMovies({ search })
+      setMovies(newMovies)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return { movies, getMovies, loading, error }
 }

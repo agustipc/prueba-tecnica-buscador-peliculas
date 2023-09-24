@@ -23,7 +23,7 @@ export function NoMoviesResults () {
 }
 
 export function Movies ({ movies }) {
-  const hasMovies = movies.length > 0
+  const hasMovies = movies?.length > 0
 
   return (
     hasMovies
@@ -33,9 +33,9 @@ export function Movies ({ movies }) {
 }
 
 ListOfMovies.propTypes = {
-  movies: PropTypes.array.isRequired
+  movies: PropTypes.array
 }
 
 Movies.propTypes = {
-  movies: PropTypes.array.isRequired
+  movies: PropTypes.array
 }
