@@ -1,13 +1,15 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo, useCallback } from 'react'
 import { searchMovies } from '../services/movies'
 
-export function useMovies ({ search }) {
+export function useMovies ({ search, sort }) {
   const [movies, setMovies] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const previousSearch = useRef(search)
 
-  const getMovies = async () => {
+  // usamos useCallback (igual que usememeo pero para funciones) para que solo se genere esta funcion cuando cambie el search
+  // le pasamos el search por parametro para que solo se ejecute cuando llamamos a la funcion
+  const getMovies = useCallback(async ({ search }) => {
     if (search === previousSearch.current) return
 
     try {
@@ -21,7 +23,15 @@ export function useMovies ({ search }) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
-  return { movies, getMovies, loading, error }
+  // const sortedMovies = sort
+  //   ? [...movies].sort((a, b) => a.title.localeCompare(b.title))
+  //   : movies
+  const sortedMovies = useMemo(() => {
+    if (!sort) return movies
+    return [...movies].sort((a, b) => a.title.localeCompare(b.title))
+  }, [movies, sort])
+
+  return { movies: sortedMovies, getMovies, loading, error }
 }
