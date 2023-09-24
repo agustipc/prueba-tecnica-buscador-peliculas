@@ -1,10 +1,9 @@
 import './App.css'
-import { ListOfMovies, NoMoviesResults } from './components/Movies'
+import { Movies } from './components/Movies'
 import responseMovies from './mocks/with-results.json'
 
 function App () {
   const movies = responseMovies.Search
-  const hasMovies = movies.length > 0
 
   return (
     <div className='page'>
@@ -16,11 +15,7 @@ function App () {
         </form>
       </header>
       <main>
-        {
-          hasMovies
-            ? ListOfMovies({ movies })
-            : NoMoviesResults()
-        }
+        <Movies movies={movies} />
       </main>
     </div>
   )

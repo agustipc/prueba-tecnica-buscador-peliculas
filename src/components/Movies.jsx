@@ -22,6 +22,20 @@ export function NoMoviesResults () {
   )
 }
 
+export function Movies ({ movies }) {
+  const hasMovies = movies.length > 0
+
+  return (
+    hasMovies
+      ? ListOfMovies({ movies })
+      : NoMoviesResults()
+  )
+}
+
 ListOfMovies.propTypes = {
-  movies: PropTypes.array
+  movies: PropTypes.array.isRequired
+}
+
+Movies.propTypes = {
+  movies: PropTypes.array.isRequired
 }
