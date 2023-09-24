@@ -1,18 +1,47 @@
 import './App.css'
+// useRef :: permite crear referencia mutable que persiste en el ciclo de vida del componente
+// cada vez que cambia no renderiza el componente
+// tambien para guardar referencia del DOM
+import { useRef } from 'react'
 import { Movies } from './components/Movies'
 import { useMovies } from './hooks/useMovies'
+import { useSearch } from './hooks/useSearch'
 
 function App () {
   const { movies } = useMovies()
+  const inputRef = useRef()
+  const { search, setSearch, error } = useSearch()
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    // Forma controlada: (using setState)
+    console.log(search)
+
+    // Forma no controlada:
+
+    // const data = new window.FormData(event.target)
+    // console.log(data.get('query'))
+
+    // const fields = Object.fromEntries(new window.FormData(event.target))
+    // console.log(fields)
+  }
+
+  const handleChange = (event) => {
+    // Forma Controlada:
+    const newQuery = event.target.value
+    if (newQuery.startsWith(' ')) return
+    setSearch(newQuery)
+  }
 
   return (
     <div className='page'>
       <header>
         <h1>BUSCADOR PELICULAS</h1>
-        <form className='form'>
-          <input placeholder='Avenger, The Matrix, Star Wars...' type='text' />
+        <form className='form' onSubmit={handleSubmit}>
+          <input onChange={handleChange} value={search} ref={inputRef} name='query' placeholder='Avenger, The Matrix, Star Wars...' type='text' />
           <button type='submit'>Search</button>
         </form>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
       </header>
       <main>
         <Movies movies={movies} />
