@@ -24,9 +24,10 @@ function App () {
 
   const handleChange = (event) => {
     // Forma Controlada:
-    const newQuery = event.target.value
-    if (newQuery.startsWith(' ')) return
-    setSearch(newQuery)
+    const newSearch = event.target.value
+    if (newSearch.startsWith(' ')) return
+    setSearch(newSearch)
+    getMovies({ search: newSearch })
   }
 
   return (
