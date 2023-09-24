@@ -2,10 +2,11 @@ import './App.css'
 // useRef :: permite crear referencia mutable que persiste en el ciclo de vida del componente
 // cada vez que cambia no renderiza el componente
 // tambien para guardar referencia del DOM
-import { useRef, useState } from 'react'
+import { useRef, useState, useCallback } from 'react'
 import { Movies } from './components/Movies'
 import { useMovies } from './hooks/useMovies'
 import { useSearch } from './hooks/useSearch'
+import debounce from 'just-debounce-it'
 
 function App () {
   const inputRef = useRef()
@@ -22,12 +23,19 @@ function App () {
     setSort(!sort)
   }
 
+  const debouncedGetMovies = useCallback(
+    debounce((search) => {
+      console.log('search')
+      getMovies({ search })
+    }, 300), [getMovies]
+  )
+
   const handleChange = (event) => {
     // Forma Controlada:
     const newSearch = event.target.value
     if (newSearch.startsWith(' ')) return
     setSearch(newSearch)
-    getMovies({ search: newSearch })
+    debouncedGetMovies(newSearch)
   }
 
   return (
